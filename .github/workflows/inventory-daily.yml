@@ -1,0 +1,80 @@
+name: inventory-daily
+
+# 毎朝 07:30 JST（= 22:30 UTC 前日）に ①EC-Force 受注取り込み → ②判定 → ③Chatwork 配信 を回し、data/ と outputs/ をコミットする。
+# Secrets: ECFORCE_API_TOKEN / ECFORCE_BASE_URL / CHATWORK_TOKEN / CHATWORK_DENY_ROOMS（値はリポジトリに書かない）
+# Variables: CHATWORK_ROOM_ID（配信先ルーム）/ VIEW_URL（任意）
+on:
+  schedule:
+    - cron: '30 22 * * *'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: '受注を取り直す開始日 YYYY-MM-DD（空なら直近3日＋更新分だけ）'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: inventory-daily
+  cancel-in-progress: false
+
+env:
+  TZ: Asia/Tokyo
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 検査（engine と automation の逆テスト・fixtures）
+        run: |
+          node test.js
+          node automation/test-automation.mjs
+
+      - name: ① EC-Force から受注を取り込む（1秒1リクエスト）
+        env:
+          ECFORCE_API_TOKEN: ${{ secrets.ECFORCE_API_TOKEN }}
+          ECFORCE_BASE_URL: ${{ secrets.ECFORCE_BASE_URL }}
+        run: |
+          if [ -n "${{ inputs.since }}" ]; then
+            node automation/fetch-ecforce.mjs --since "${{ inputs.since }}"
+          else
+            node automation/fetch-ecforce.mjs
+          fi
+
+      - name: ② 判定（po.json → outputs/latest.json / latest.md）
+        run: node automation/run-judgment.mjs
+
+      - name: data/ と outputs/ をコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data outputs
+          if git diff --cached --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "inventory-daily: $(date +%F) の判定"
+            git pull --rebase
+            git push
+          fi
+
+      - name: ③ Chatwork に配信
+        env:
+          CHATWORK_TOKEN: ${{ secrets.CHATWORK_TOKEN }}
+          CHATWORK_ROOM_ID: ${{ vars.CHATWORK_ROOM_ID }}
+          CHATWORK_DENY_ROOMS: ${{ secrets.CHATWORK_DENY_ROOMS }}
+          VIEW_URL: ${{ vars.VIEW_URL }}
+        run: node automation/post-chatwork.mjs
+
+      - name: 結果を Summary に
+        run: |
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat outputs/latest.md >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"

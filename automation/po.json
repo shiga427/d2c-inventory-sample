@@ -1,0 +1,13 @@
+{
+ "pos": [
+  {
+   "id": "po-fixture",
+   "sku": "SAMPLE-A",
+   "qty": 20000,
+   "orderDate": "2026-07-30",
+   "eta": "2026-11-30",
+   "status": "open",
+   "memo": "fixture"
+  }
+ ]
+}

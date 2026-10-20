@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>D2C 在庫発注管理</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1a1d23;--ink2:#555c68;--muted:#8a919c;--line:#e3e6ea;--accent:#2f6fed;--good:#2e9e5b;--warn:#d9931c;--bad:#d64545;--grid:#eceff3}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#121418;--card:#1b1e24;--ink:#e8eaee;--ink2:#b0b6bf;--muted:#7d848e;--line:#2b3038;--accent:#6b9cff;--good:#4fc07c;--warn:#e8a93a;--bad:#ef6b6b;--grid:#262a31}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;flex-wrap:wrap}
+header h1{font-size:16px;margin:0 8px 0 0}
+nav button{background:none;border:0;padding:8px 10px;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;font-size:14px}
+nav button.on{color:var(--ink);border-color:var(--accent);font-weight:600}
+.sp{flex:1}
+main{padding:16px;max-width:1200px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+h2{font-size:15px;margin:0 0 10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--ink2);font-weight:600;font-size:12px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.pick{cursor:pointer}tr.pick:hover{background:var(--grid)}tr.sel{background:var(--grid)}
+input,select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);min-width:0}
+input[type=number]{width:90px;text-align:right}input[type=date]{width:150px}
+button.btn{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);cursor:pointer}
+button.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+button.btn.danger{color:var(--bad)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px}
+.kpi .l{font-size:12px;color:var(--ink2)}.kpi .v{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;background:var(--grid)}
+.st-bad{color:var(--bad);font-weight:600}.st-warn{color:var(--warn);font-weight:600}.st-good{color:var(--good)}
+.muted{color:var(--muted);font-size:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid2{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--ink2)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:10px}
+.scroll{overflow:auto;max-height:420px}
+svg text{font-size:11px;fill:var(--ink2)}
+.tip{position:absolute;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.12);display:none;z-index:9}
+textarea{width:100%;min-height:120px;font:12px/1.4 ui-monospace,Menlo,monospace;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);padding:8px}
+details summary{cursor:pointer;color:var(--ink2);font-size:13px}
+.hint{font-size:12px;color:var(--ink2);margin:4px 0 8px}
+body.view nav,body.view #tab-daily,body.view #tab-products,body.view #tab-po,body.view #tab-data{display:none!important}
+#viewBanner{display:none;background:var(--grid);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13px}body.view #viewBanner{display:block}
+</style>
+</head>
+<body>
+<header>
+  <h1>📦 D2C 在庫発注管理</h1>
+  <nav>
+    <button data-tab="dash" class="on">発注判定</button>
+    <button data-tab="daily">日次入力</button>
+    <button data-tab="products">商品設定</button>
+    <button data-tab="po">発注・入荷</button>
+    <button data-tab="data">データ</button>
+  </nav>
+  <span class="sp"></span>
+  <label class="muted">基準日 <input type="date" id="asOf"></label>
+</header>
+<main>
+<div id="viewBanner"></div>
+<section id="tab-dash">
+  <div class="card">
+    <h2>今日の判定</h2>
+    <div class="kpis" id="kpis"></div>
+    <div class="scroll"><table id="dashTable"></table></div>
+    <p class="hint">🔴 即発注（期限超過 or リードタイム内に在庫切れ）／🟡 次の発注間隔内に期限／🟢 範囲内／⚪ 受注データなし。行をクリックで下に詳細。</p>
+  </div>
+  <div class="card" id="detail" style="display:none">
+    <h2 id="detailTitle"></h2>
+    <div class="kpis" id="detailKpis"></div>
+    <div style="position:relative"><div id="chart"></div><div class="tip" id="tip"></div></div>
+    <details style="margin-top:8px"><summary>判定の根拠（数字）</summary><div id="basis" class="muted" style="margin-top:6px"></div></details>
+    <details style="margin-top:8px"><summary>日別の在庫見込み（表）</summary><div class="scroll" style="margin-top:6px"><table id="projTable"></table></div></details>
+  </div>
+</section>
+
+<section id="tab-daily" style="display:none">
+  <div class="card">
+    <h2>日次入力（受注件数）</h2>
+    <p class="hint">毎日1回、SKUごとに「都度受注件数」を入れます。定期出荷数は実績が分かれば入れる（空なら見込みで計算）。同じ日・同じSKUは上書き。</p>
+    <div class="form">
+      <label class="f">日付<input type="date" id="lgDate"></label>
+      <label class="f">SKU<select id="lgSku"></select></label>
+      <label class="f">都度受注件数<input type="number" id="lgOrders" min="0" step="1"></label>
+      <label class="f">新規定期 件数<input type="number" id="lgNewSubs" min="0" step="1" placeholder="任意"></label>
+      <label class="f">定期出荷数（実績）<input type="number" id="lgSubShipped" min="0" step="1" placeholder="任意"></label>
+      <label class="f">入庫調整(+/-)<input type="number" id="lgAdjust" step="1" placeholder="任意"></label>
+    </div>
+    <div class="row"><button class="btn pri" id="lgAdd">保存</button><span class="muted">保存すると判定が即更新されます</span></div>
+  </div>
+  <div class="card">
+    <h2>CSV 一括取り込み</h2>
+    <p class="hint">列: <code>date, sku, orders, newsubs, subshipped, adjust</code>（日本語の「日付,SKU,受注件数,新規定期,定期出荷,調整」も可）。EC-Force等の日次エクスポートを整形して貼る。</p>
+    <textarea id="csvBox" placeholder="date,sku,orders,newsubs&#10;2026-10-20,SB-SERUM,42,9"></textarea>
+    <div class="row"><button class="btn" id="csvImport">取り込む</button><input type="file" id="csvFile" accept=".csv,text/csv"></div>
+  </div>
+  <div class="card">
+    <h2>EC-Force の受注CSV をそのまま取り込む</h2>
+    <p class="hint">EC-Force「受注管理 → CSV出力」のファイルをそのまま。必要列: <code>受注日, 対応状況, 定期回数, 購入商品（商品名）, 小計</code>。定期回数1=新規（有効受注を数え、未発送は「未出荷」に積む）、2以上の発送完了=定期出荷（本数は 小計÷単価 で推定、プラン別の本数が分かればそちら）。キャンセル・返品・解約手数料は除外。</p>
+    <div class="form">
+      <label class="f">取り込み先 SKU<select id="ecSku"></select></label>
+      <label class="f">1本の単価（本数の推定用）<input type="number" id="ecUnitPrice" value="3000"></label>
+      <label class="f">プラン別本数（例: 通常=2,プランB=3）<input id="ecUnits" placeholder="空なら単価で推定"></label>
+      <label class="f">初回の本数<input type="number" id="ecFirst" value="1" min="1"></label>
+    </div>
+    <textarea id="ecBox" placeholder="受注日,対応状況,定期回数,購入商品（商品名）,小計&#10;2026-10-01 10:00,発送完了,1,商品A 通常プラン,2000"></textarea>
+    <div class="row"><button class="btn" id="ecImport">取り込む</button><input type="file" id="ecFile" accept=".csv,text/csv"><span class="muted">同じ日・同じSKUの行は上書き。未出荷件数は商品設定に書き込みます</span></div>
+  </div>
+  <div class="card">
+    <h2>入力済みログ（直近60件）</h2>
+    <div class="scroll"><table id="logTable"></table></div>
+  </div>
+</section>
+
+<section id="tab-products" style="display:none">
+  <div class="card">
+    <h2 id="pfTitle">商品を追加</h2>
+    <div class="form">
+      <label class="f">SKU（変更不可）<input id="pSku" placeholder="SB-SERUM"></label>
+      <label class="f">商品名<input id="pName"></label>
+      <label class="f">リードタイム(日)<input type="number" id="pLead" min="0"></label>
+      <label class="f">最小ロット MOQ<input type="number" id="pMoq" min="0"></label>
+      <label class="f">発注単位（倍数）<input type="number" id="pStep" min="0"></label>
+      <label class="f">原価(円/個)<input type="number" id="pCost" min="0"></label>
+      <label class="f">安全在庫(日数)<input type="number" id="pSafety" min="0"></label>
+      <label class="f">発注間隔(日)<input type="number" id="pReview" min="1"></label>
+      <label class="f">1受注あたり個数<input type="number" id="pQpo" min="1" step="0.1"></label>
+      <label class="f">需要係数（1.0=補正なし）<input type="number" id="pFactor" min="0" step="0.1"></label>
+      <label class="f">未出荷の新規定期（件）<input type="number" id="pBacklog" min="0" step="1" placeholder="先行受付の積み上がり"></label>
+    </div>
+    <h2>実棚（この日時点の在庫）</h2>
+    <div class="form">
+      <label class="f">棚卸日<input type="date" id="pBaseDate"></label>
+      <label class="f">在庫数<input type="number" id="pBaseQty" min="0"></label>
+    </div>
+    <h2>定期（サブスク）</h2>
+    <div class="form">
+      <label class="f">アクティブ会員数（旧方式・日次の新規定期の実績が無い時だけ）<input type="number" id="sActive" min="0"></label>
+      <label class="f">2回目以降の周期(日)<input type="number" id="sCycle" min="1"></label>
+      <label class="f">初回→2回目の日数（0=周期と同じ）<input type="number" id="sFirst" min="0"></label>
+      <label class="f">初回の個数<input type="number" id="sQtyFirst" min="0" step="0.1"></label>
+      <label class="f">2回目以降の個数<input type="number" id="sQty" min="0" step="0.1"></label>
+      <label class="f">段階別継続率（F1→F2,F2→F3,… カンマ区切り）<input id="sCurve" placeholder="0.59,0.41,0.62,0.61,0.60"></label>
+      <label class="f">初回→2回目 継続率（カーブが無い時）<input type="number" id="sF2" min="0" max="1" step="0.01" placeholder="0.80"></label>
+      <label class="f">以降の継続率（カーブより先の段階にも使う）<input type="number" id="sRet" min="0" max="1" step="0.01" placeholder="0.90"></label>
+      <label class="f">都度受注→定期 比率<input type="number" id="sNewRatio" min="0" max="1" step="0.01" placeholder="0.2（日次の新規定期が無い時）"></label>
+    </div>
+    <label class="f">メモ（仮の値・要確認事項）<input id="pNote"></label>
+    <div class="row" style="margin-top:8px"><button class="btn pri" id="pSave">保存</button><button class="btn" id="pNew">新規にする</button></div>
+  </div>
+  <div class="card"><h2>商品一覧</h2><div class="scroll"><table id="prodTable"></table></div></div>
+</section>
+
+<section id="tab-po" style="display:none">
+  <div class="card">
+    <h2>発注を登録（入荷予定）</h2>
+    <p class="hint">判定タブの推奨数量を見て発注したら、ここに登録。入荷したら「入荷」を押すと在庫に足されます。</p>
+    <div class="form">
+      <label class="f">SKU<select id="poSku"></select></label>
+      <label class="f">数量<input type="number" id="poQty" min="0"></label>
+      <label class="f">発注日<input type="date" id="poDate"></label>
+      <label class="f">入荷予定日<input type="date" id="poEta"></label>
+      <label class="f">メモ<input id="poMemo" placeholder="発注先・PO番号"></label>
+    </div>
+    <div class="row"><button class="btn pri" id="poAdd">登録</button><span class="muted">入荷予定日はリードタイムから自動入力。手で直せます</span></div>
+  </div>
+  <div class="card"><h2>発注一覧</h2><div class="scroll"><table id="poTable"></table></div></div>
+</section>
+
+<section id="tab-data" style="display:none">
+  <div class="card">
+    <h2>見込み計算の設定</h2>
+    <div class="form">
+      <label class="f">見込み期間(日)<input type="number" id="stHorizon" min="30"></label>
+      <label class="f">直近窓(日)<input type="number" id="stShort" min="1"></label>
+      <label class="f">長期窓(日)<input type="number" id="stLong" min="1"></label>
+      <label class="f">直近の重み(0〜1)<input type="number" id="stWeight" min="0" max="1" step="0.1"></label>
+      <label class="f">過剰在庫の線(日数)<input type="number" id="stOver" min="1"></label>
+      <label class="f">コホート実績を遡る日数<input type="number" id="stHist" min="30"></label>
+    </div>
+    <div class="row"><button class="btn pri" id="stSave">保存</button></div>
+  </div>
+  <div class="card">
+    <h2>バックアップ・共有</h2>
+    <p class="hint">データはこのブラウザの中（localStorage）に保存されます。別のPCや担当者と共有するときは JSON を書き出して渡す。毎週1回は書き出して保管。</p>
+    <div class="row">
+      <button class="btn" id="exportJson">JSON 書き出し</button>
+      <input type="file" id="importJson" accept="application/json">
+      <button class="btn" id="exportCsv">判定結果を CSV 書き出し</button>
+      <button class="btn" id="loadSample">サンプルデータを入れる</button>
+      <button class="btn danger" id="wipe">全データ削除</button>
+    </div>
+  </div>
+</section>
+</main>
+<script src="engine.js"></script>
+<script>
+(function(){
+'use strict';
+const E = window.InvEngine;
+const KEY = 'd2c-inventory-v1';
+const $ = (id) => document.getElementById(id);
+const today = E.fmt(new Date());
+const VIEW = new URLSearchParams(location.search).get('view') === '1';   // ?view=1 ＝ 閲覧専用（入力タブなし・data/sample-state.json を読む・保存しない）
+let state = load();
+let selSku = null;
+let editSku = null;
+
+function load(){ try{ const s = JSON.parse(localStorage.getItem(KEY)); if(s && s.products) return s; }catch(e){} return { products:[], logs:[], pos:[], settings:E.defaultSettings(), asOf:today }; }
+function save(){ if(VIEW) return; try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ alert('保存できませんでした: '+e.message); } }
+function asOf(){ return $('asOf').value || today; }
+const fmtN = (n, d=0) => (n===null||n===undefined||!isFinite(n)) ? '—' : Number(n).toLocaleString('ja-JP',{maximumFractionDigits:d,minimumFractionDigits:d});
+const yen = (n) => '¥'+fmtN(n);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const stCls = (s) => s==='🔴'?'st-bad':s==='🟡'?'st-warn':s==='🟢'?'st-good':'';
+
+/* ---- tabs ---- */
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  ['dash','daily','products','po','data'].forEach(t=>$('tab-'+t).style.display = (b.dataset.tab===t?'':'none'));
+  renderAll();
+}));
+$('asOf').value = state.asOf || today;
+$('asOf').addEventListener('change', renderAll);
+
+/* ---- dashboard ---- */
+function renderDash(){
+  const res = E.projectAll(state, asOf());
+  const red = res.filter(r=>r.status==='🔴').length, yel = res.filter(r=>r.status==='🟡').length;
+  const cost = res.reduce((s,r)=>s+r.recommendCost,0);
+  $('kpis').innerHTML = [
+    ['SKU数', res.length],
+    ['🔴 即発注', red],
+    ['🟡 要注意', yel],
+    ['推奨発注 合計金額', yen(cost)],
+  ].map(([l,v])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div></div>`).join('');
+  const rows = res.slice().sort((a,b)=>{ const o={'🔴':0,'🟡':1,'🟢':2,'⚪':3}; return (o[a.status]-o[b.status]) || ((a.orderDeadlineDay??1e9)-(b.orderDeadlineDay??1e9)); });
+  $('dashTable').innerHTML = `<thead><tr><th>判定</th><th>SKU</th><th>商品</th><th class="num">現在庫</th><th class="num">未出荷</th><th class="num">定期確保</th><th class="num">都度に回せる</th><th class="num">1日消化</th><th class="num">在庫日数</th><th>在庫切れ見込</th><th>発注期限</th><th class="num">推奨発注数</th><th class="num">金額</th><th>理由</th></tr></thead><tbody>` +
+    rows.map(r=>`<tr class="pick ${r.sku===selSku?'sel':''}" data-sku="${esc(r.sku)}">
+      <td class="${stCls(r.status)}">${r.status}</td><td>${esc(r.sku)}</td><td>${esc(r.name)}</td>
+      <td class="num">${fmtN(r.stock0)}</td><td class="num ${r.backlogQty>0?'st-bad':''}">${r.backlogQty?fmtN(r.backlogQty):'—'}</td><td class="num">${fmtN(r.reservedNow)}</td><td class="num ${r.freeNow<0?'st-bad':''}">${fmtN(r.freeNow)}</td>
+      <td class="num">${fmtN(r.dailyTotal,1)}</td><td class="num">${r.daysOfCover===Infinity?'∞':fmtN(r.daysOfCover)}</td>
+      <td>${r.stockoutDate ?? '期間内なし'}</td><td class="${r.orderDeadlineDay!==null&&r.orderDeadlineDay<=0?'st-bad':''}">${r.orderDeadlineDate ?? '—'}</td>
+      <td class="num"><b>${r.recommendQty?fmtN(r.recommendQty):'—'}</b></td><td class="num">${r.recommendQty?yen(r.recommendCost):'—'}</td><td class="muted">${esc(r.reason)}</td></tr>`).join('') + '</tbody>';
+  $('dashTable').querySelectorAll('tr.pick').forEach(tr=>tr.addEventListener('click',()=>{ selSku=tr.dataset.sku; renderDash(); }));
+  const sel = res.find(r=>r.sku===selSku);
+  $('detail').style.display = sel ? '' : 'none';
+  if(sel) renderDetail(sel);
+}
+
+function renderDetail(r){
+  const p = state.products.find(x=>x.sku===r.sku);
+  $('detailTitle').textContent = `${r.sku} ${r.name} — ${r.status} ${r.reason}`;
+  $('detailKpis').innerHTML = [
+    ['現在庫', fmtN(r.stock0)], ['未出荷(予約)', fmtN(r.backlogQty)], ['うち定期確保', fmtN(r.reservedNow)], ['都度に回せる', fmtN(r.freeNow)],
+    ['都度 1日', fmtN(r.oneOffPerDay,1)], ['定期 1日(28日平均)', fmtN(r.subPerDay,1)], ['安全在庫', fmtN(r.safetyStock)],
+    ['在庫切れ見込', r.stockoutDate ?? '期間内なし'], ['発注期限', r.orderDeadlineDate ?? '—'],
+    ['推奨発注数', r.recommendQty?fmtN(r.recommendQty):'—'], ['今日発注→入荷', r.etaIfOrderedToday], ['入荷予定(未着)', fmtN(r.openPoQty)],
+  ].map(([l,v])=>`<div class="kpi"><div class="l">${l}</div><div class="v" style="font-size:16px">${v}</div></div>`).join('');
+  $('basis').innerHTML = [
+    `都度の1日件数: ${fmtN(r.velShort,2)}（直近${state.settings.shortWindow}日）／${fmtN(r.velLong,2)}（${state.settings.longWindow}日）→ 重み付け ${fmtN(r.oneOffPerDay,2)}個/日（${r.velocityBasis}・需要係数 ${p.demandFactor}）`,
+    `新規定期: ${fmtN(r.newShort,1)}件/日（直近${state.settings.shortWindow}日）／${fmtN(r.newLong,1)}（${state.settings.longWindow}日）→ ${fmtN(r.newPerDay,1)}件/日（${r.newSubsBasis}）。実績コホート ${r.historyDays}日分から将来の出荷を置く`,
+    `定期の規則: 初回→2回目 ${p.sub.firstCycleDays||p.sub.cycleDays}日、以降 ${p.sub.cycleDays}日周期、初回 ${p.sub.qtyFirst||1}個・2回目以降 ${p.sub.qtyPerShip}個、段階別継続率 [${(p.sub.retentionCurve||[]).join(', ')||'なし→F2 '+p.sub.f2Rate+' 以降 '+p.sub.retention}]${p.sub.active?`、旧方式アクティブ ${fmtN(p.sub.active)}名`:''}`,
+    `未出荷の新規定期 ${fmtN(p.backlogSubs)}件 → ${r.backlogStartDay>0?E.addDays(r.asOf,r.backlogStartDay)+'（最初の入荷日）':'今日'}に出荷`,
+    p.note ? `メモ: ${p.note}` : '',
+    `安全在庫 = (都度+定期) ${fmtN(r.dailyTotal,2)}個/日 × ${p.safetyDays}日 = ${fmtN(r.safetyStock)}`,
+    `リードタイム ${p.leadTimeDays}日後の見込在庫 ${fmtN(r.stockAtLead)}。その後 発注間隔 ${p.reviewDays}日分の需要 ${fmtN(r.needDuring)} ＋ 安全在庫 を割る分を MOQ ${fmtN(p.moq)}・単位 ${fmtN(p.lotStep)} に丸め → ${fmtN(r.recommendQty)}`,
+    `発注期限 = 安全在庫を割る日（${r.safetyBreachDay!==null?E.addDays(r.asOf,r.safetyBreachDay):'なし'}）− リードタイム ${p.leadTimeDays}日`,
+  ].filter(Boolean).map(s=>`<div>・${esc(s)}</div>`).join('');
+  drawChart(r);
+  $('projTable').innerHTML = `<thead><tr><th>日付</th><th class="num">入荷</th><th class="num">都度</th><th class="num">定期</th><th class="num">在庫見込</th><th class="num">定期確保</th><th class="num">都度に回せる</th></tr></thead><tbody>` +
+    r.rows.filter((x,i)=>i%7===0 || x.arrival>0 || (x.stock<0 && r.rows[i-1] && r.rows[i-1].stock>=0)).map(x=>`<tr><td>${x.date}</td><td class="num">${x.arrival?fmtN(x.arrival):''}</td><td class="num">${fmtN(x.oneOff,1)}</td><td class="num">${fmtN(x.sub,1)}</td><td class="num ${x.stock<0?'st-bad':x.stock<r.safetyStock?'st-warn':''}">${fmtN(x.stock)}</td><td class="num">${fmtN(x.reserved)}</td><td class="num ${x.free<0?'st-bad':''}">${fmtN(x.free)}</td></tr>`).join('') + '</tbody>';
+}
+
+/* 単一系列の折れ線（在庫見込み）＋ 安全在庫の基準線・0線。ホバーで日別ツールチップ */
+function drawChart(r){
+  const W = Math.min(1100, $('chart').clientWidth || 800), H = 240, m = {t:16,r:16,b:28,l:56};
+  const rows = r.rows; const n = rows.length;
+  const ys = rows.map(x=>x.stock).concat([0, r.safetyStock]);
+  const yMin = Math.min(...ys), yMax = Math.max(...ys);
+  const pad = (yMax-yMin)*0.08 || 10;
+  const sx = (i)=> m.l + (i/(n-1))*(W-m.l-m.r);
+  const sy = (v)=> m.t + (1-(v-(yMin-pad))/((yMax+pad)-(yMin-pad)))*(H-m.t-m.b);
+  const path = rows.map((x,i)=>`${i?'L':'M'}${sx(i).toFixed(1)},${sy(x.stock).toFixed(1)}`).join('');
+  const ticks = 4; let grid='';
+  for(let i=0;i<=ticks;i++){ const v = (yMin-pad) + ((yMax+pad)-(yMin-pad))*i/ticks; grid += `<line x1="${m.l}" x2="${W-m.r}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--grid)"/><text x="${m.l-6}" y="${sy(v)+4}" text-anchor="end">${fmtN(v)}</text>`; }
+  let xl=''; for(let i=0;i<n;i+=Math.max(1,Math.round(n/6))){ xl += `<text x="${sx(i)}" y="${H-8}" text-anchor="middle">${rows[i].date.slice(5)}</text>`; }
+  const arr = rows.map((x,i)=> x.arrival>0 ? `<circle cx="${sx(i)}" cy="${sy(x.stock)}" r="4" fill="var(--good)" stroke="var(--card)" stroke-width="2"/>` : '').join('');
+  const so = r.stockoutDay!==null ? `<line x1="${sx(r.stockoutDay)}" x2="${sx(r.stockoutDay)}" y1="${m.t}" y2="${H-m.b}" stroke="var(--bad)" stroke-dasharray="3 3"/><text x="${sx(r.stockoutDay)+4}" y="${m.t+10}" fill="var(--bad)">在庫切れ</text>`:'';
+  const dl = r.orderDeadlineDay!==null && r.orderDeadlineDay>=0 && r.orderDeadlineDay<n ? `<line x1="${sx(r.orderDeadlineDay)}" x2="${sx(r.orderDeadlineDay)}" y1="${m.t}" y2="${H-m.b}" stroke="var(--warn)" stroke-dasharray="3 3"/><text x="${sx(r.orderDeadlineDay)+4}" y="${m.t+22}" fill="var(--warn)">発注期限</text>`:'';
+  $('chart').innerHTML = `<svg width="${W}" height="${H}" role="img" aria-label="在庫見込みの推移">${grid}
+    <line x1="${m.l}" x2="${W-m.r}" y1="${sy(0)}" y2="${sy(0)}" stroke="var(--ink2)" stroke-width="1"/>
+    <line x1="${m.l}" x2="${W-m.r}" y1="${sy(r.safetyStock)}" y2="${sy(r.safetyStock)}" stroke="var(--muted)" stroke-dasharray="4 3"/><text x="${W-m.r}" y="${sy(r.safetyStock)-4}" text-anchor="end">安全在庫 ${fmtN(r.safetyStock)}</text>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>${arr}${so}${dl}${xl}
+    <line id="xh" x1="0" x2="0" y1="${m.t}" y2="${H-m.b}" stroke="var(--ink2)" style="display:none"/>
+    <rect x="${m.l}" y="${m.t}" width="${W-m.l-m.r}" height="${H-m.t-m.b}" fill="transparent" id="hit"/></svg>
+    <div class="muted">● 入荷予定　— 安全在庫（破線）　在庫見込み（青線）</div>`;
+  const hit = $('hit'), xh = $('xh'), tip = $('tip');
+  hit.addEventListener('mousemove', (ev)=>{
+    const rect = hit.getBoundingClientRect(); const i = Math.round(((ev.clientX-rect.left)/rect.width)*(n-1)); const x = rows[Math.max(0,Math.min(n-1,i))];
+    xh.setAttribute('x1',sx(i)); xh.setAttribute('x2',sx(i)); xh.style.display='';
+    tip.style.display=''; tip.style.left = (ev.clientX-$('chart').getBoundingClientRect().left+12)+'px'; tip.style.top = (ev.clientY-$('chart').getBoundingClientRect().top-10)+'px';
+    tip.innerHTML = `<b>${x.date}</b><br>在庫見込 ${fmtN(x.stock)}<br>定期確保 ${fmtN(x.reserved)}／都度に回せる ${fmtN(x.free)}<br>需要 都度${fmtN(x.oneOff,1)}＋定期${fmtN(x.sub,1)}${x.arrival?`<br>入荷 ${fmtN(x.arrival)}`:''}`;
+  });
+  hit.addEventListener('mouseleave', ()=>{ xh.style.display='none'; tip.style.display='none'; });
+}
+
+/* ---- daily ---- */
+function fillSkuSelects(){
+  const opts = state.products.map(p=>`<option value="${esc(p.sku)}">${esc(p.sku)} ${esc(p.name)}</option>`).join('');
+  ['lgSku','poSku','ecSku'].forEach(id=>{ const cur=$(id).value; $(id).innerHTML = opts; if(cur) $(id).value=cur; });
+}
+$('lgDate').value = today;
+$('lgAdd').addEventListener('click', ()=>{
+  const sku = $('lgSku').value; if(!sku) return alert('先に商品を登録してください');
+  const row = { date: $('lgDate').value, sku, orders: E.num($('lgOrders').value) };
+  if($('lgNewSubs').value!=='') row.newSubs = E.num($('lgNewSubs').value);
+  if($('lgSubShipped').value!=='') row.subShipped = E.num($('lgSubShipped').value);
+  if($('lgAdjust').value!=='') row.adjust = E.num($('lgAdjust').value);
+  if(!row.date) return alert('日付を入れてください');
+  E.upsertLogs(state,[row]); save(); ['lgOrders','lgNewSubs','lgSubShipped','lgAdjust'].forEach(i=>$(i).value=''); renderAll();
+});
+$('csvImport').addEventListener('click', ()=>{ const rows = E.importLogsCSV($('csvBox').value); if(!rows.length) return alert('読める行がありません'); const unknown = [...new Set(rows.map(r=>r.sku))].filter(s=>!state.products.some(p=>p.sku===s)); if(unknown.length && !confirm(`未登録SKUがあります: ${unknown.join(', ')}\nそのまま取り込みますか（判定には出ません）`)) return; E.upsertLogs(state,rows); save(); $('csvBox').value=''; renderAll(); alert(`${rows.length}行を取り込みました`); });
+$('ecImport').addEventListener('click', ()=>{
+  const sku=$('ecSku').value; if(!sku) return alert('先に商品を登録してください');
+  const unitsByPlan={}; $('ecUnits').value.split(/[,、]/).forEach(kv=>{ const m=kv.split(/[=:：]/); if(m.length===2 && E.num(m[1])>0) unitsByPlan[m[0].trim()]=E.num(m[1]); });
+  const r = E.importEcforceCSV($('ecBox').value, { sku, unitPrice:E.num($('ecUnitPrice').value)||3000, unitsByPlan, firstUnits:E.num($('ecFirst').value)||1 });
+  if(!r.logs.length) return alert('読める行がありません（受注日・対応状況・定期回数の列があるか確認）');
+  E.upsertLogs(state, r.logs);
+  const p=state.products.find(x=>x.sku===sku); p.backlogSubs = r.pendingSubs[sku]||0;
+  save(); $('ecBox').value=''; renderAll();
+  alert(`${r.logs.length}日分を取り込みました（${r.dates[0]}〜${r.dates[1]}）。未出荷の新規定期 ${p.backlogSubs}件を商品設定に書き込みました。除外 ${r.excluded}行（キャンセル・返品・解約手数料・SKU不明）`);
+});
+$('ecFile').addEventListener('change', (e)=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ $('ecBox').value=t; }); });
+$('csvFile').addEventListener('change', (e)=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ $('csvBox').value=t; }); });
+function renderLogs(){
+  const logs = (state.logs||[]).slice().sort((a,b)=>b.date.localeCompare(a.date)||a.sku.localeCompare(b.sku)).slice(0,60);
+  $('logTable').innerHTML = `<thead><tr><th>日付</th><th>SKU</th><th class="num">都度受注</th><th class="num">新規定期</th><th class="num">うち初回出荷済</th><th class="num">定期出荷(本)</th><th class="num">調整</th><th></th></tr></thead><tbody>` +
+    logs.map((l,i)=>`<tr><td>${l.date}</td><td>${esc(l.sku)}</td><td class="num">${fmtN(l.orders)}</td><td class="num">${l.newSubs??''}</td><td class="num">${l.newSubsShipped??''}</td><td class="num">${l.subShipped??''}</td><td class="num">${l.adjust??''}</td><td><button class="btn danger" data-del="${l.date}|${esc(l.sku)}">削除</button></td></tr>`).join('') + '</tbody>';
+  $('logTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{ const [d,s]=b.dataset.del.split('|'); state.logs = state.logs.filter(l=>!(l.date===d&&l.sku===s)); save(); renderAll(); }));
+}
+
+/* ---- products ---- */
+const pf = { pSku:'sku', pName:'name', pLead:'leadTimeDays', pMoq:'moq', pStep:'lotStep', pCost:'unitCost', pSafety:'safetyDays', pReview:'reviewDays', pQpo:'qtyPerOrder', pFactor:'demandFactor', pBacklog:'backlogSubs', pNote:'note' };
+const sf = { sActive:'active', sCycle:'cycleDays', sFirst:'firstCycleDays', sQtyFirst:'qtyFirst', sQty:'qtyPerShip', sF2:'f2Rate', sRet:'retention', sNewRatio:'newSubRatio' };
+function fillProductForm(p){
+  p = p || Object.assign(E.defaultProduct(), {qtyPerOrder:1});
+  Object.entries(pf).forEach(([id,k])=>{ $(id).value = p[k] ?? ''; });
+  Object.entries(sf).forEach(([id,k])=>{ $(id).value = (p.sub||{})[k] ?? ''; });
+  $('sCurve').value = ((p.sub||{}).retentionCurve||[]).join(',');
+  $('pBaseDate').value = (p.stockBase||{}).date || today; $('pBaseQty').value = (p.stockBase||{}).qty ?? 0;
+  $('pSku').disabled = !!editSku; $('pfTitle').textContent = editSku ? `商品を編集: ${editSku}` : '商品を追加';
+}
+$('pNew').addEventListener('click', ()=>{ editSku=null; fillProductForm(); });
+$('pSave').addEventListener('click', ()=>{
+  const sku = $('pSku').value.trim(); if(!sku) return alert('SKUを入れてください');
+  if(!editSku && state.products.some(p=>p.sku===sku)) return alert('同じSKUがあります');
+  const p = editSku ? state.products.find(x=>x.sku===editSku) : Object.assign(E.defaultProduct(), {sku});
+  Object.entries(pf).forEach(([id,k])=>{ if(k==='sku') return; const v=$(id).value; p[k] = (k==='name'||k==='note') ? v : E.num(v); });
+  p.sub = p.sub || {}; Object.entries(sf).forEach(([id,k])=>{ p.sub[k] = E.num($(id).value); });
+  p.sub.retentionCurve = $('sCurve').value.split(/[,、\s]+/).map(Number).filter(x=>x>0);
+  if(!p.sub.qtyFirst) p.sub.qtyFirst = 1;
+  if(!p.sub.cycleDays) p.sub.cycleDays = 30; if(!p.sub.qtyPerShip) p.sub.qtyPerShip = 1; if(!p.qtyPerOrder) p.qtyPerOrder = 1; if(!p.demandFactor) p.demandFactor = 1;
+  p.stockBase = { date: $('pBaseDate').value || today, qty: E.num($('pBaseQty').value) };
+  if(!editSku) state.products.push(p);
+  save(); editSku=null; fillProductForm(); renderAll();
+});
+function renderProducts(){
+  $('prodTable').innerHTML = `<thead><tr><th>SKU</th><th>商品</th><th class="num">LT日</th><th class="num">MOQ</th><th class="num">単位</th><th class="num">原価</th><th class="num">安全日</th><th class="num">間隔</th><th>実棚</th><th class="num">未出荷</th><th class="num">継続率</th><th></th></tr></thead><tbody>` +
+    state.products.map(p=>`<tr><td>${esc(p.sku)}</td><td>${esc(p.name)}</td><td class="num">${p.leadTimeDays}</td><td class="num">${fmtN(p.moq)}</td><td class="num">${fmtN(p.lotStep)}</td><td class="num">${yen(p.unitCost)}</td><td class="num">${p.safetyDays}</td><td class="num">${p.reviewDays}</td><td>${p.stockBase.date} / ${fmtN(p.stockBase.qty)}</td><td class="num">${fmtN(p.backlogSubs)}</td><td class="num">${(p.sub.retentionCurve||[]).length?p.sub.retentionCurve.join('/'):p.sub.retention}</td>
+      <td><button class="btn" data-edit="${esc(p.sku)}">編集</button> <button class="btn danger" data-rm="${esc(p.sku)}">削除</button></td></tr>`).join('') + '</tbody>';
+  $('prodTable').querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>{ editSku=b.dataset.edit; fillProductForm(state.products.find(p=>p.sku===editSku)); window.scrollTo(0,0); }));
+  $('prodTable').querySelectorAll('[data-rm]').forEach(b=>b.addEventListener('click',()=>{ if(!confirm(`${b.dataset.rm} を削除しますか（ログ・発注も消えます）`)) return; state.products = state.products.filter(p=>p.sku!==b.dataset.rm); state.logs=(state.logs||[]).filter(l=>l.sku!==b.dataset.rm); state.pos=(state.pos||[]).filter(l=>l.sku!==b.dataset.rm); save(); renderAll(); }));
+}
+
+/* ---- PO ---- */
+$('poDate').value = today;
+function autoEta(){ const p = state.products.find(x=>x.sku===$('poSku').value); if(p && $('poDate').value) $('poEta').value = E.addDays($('poDate').value, E.num(p.leadTimeDays)); }
+$('poSku').addEventListener('change', autoEta); $('poDate').addEventListener('change', autoEta);
+$('poAdd').addEventListener('click', ()=>{
+  const sku=$('poSku').value, qty=E.num($('poQty').value); if(!sku||qty<=0) return alert('SKUと数量を入れてください');
+  if(!$('poEta').value) autoEta();
+  state.pos = state.pos||[]; state.pos.push({ id: Date.now().toString(36), sku, qty, orderDate:$('poDate').value, eta:$('poEta').value, memo:$('poMemo').value, status:'open' });
+  save(); $('poQty').value=''; $('poMemo').value=''; renderAll();
+});
+function renderPO(){
+  const pos = (state.pos||[]).slice().sort((a,b)=> (a.status===b.status?0:a.status==='open'?-1:1) || a.eta.localeCompare(b.eta));
+  $('poTable').innerHTML = `<thead><tr><th>状態</th><th>SKU</th><th class="num">数量</th><th>発注日</th><th>入荷予定</th><th>入荷日</th><th>メモ</th><th></th></tr></thead><tbody>` +
+    pos.map(po=>`<tr><td>${po.status==='open'?'<span class="badge">未着</span>':'<span class="badge">入荷済</span>'}</td><td>${esc(po.sku)}</td><td class="num">${fmtN(po.receivedQty??po.qty)}</td><td>${po.orderDate}</td><td>${po.eta}</td><td>${po.receivedDate??''}</td><td>${esc(po.memo)}</td>
+      <td>${po.status==='open'?`<button class="btn pri" data-recv="${po.id}">入荷</button> `:''}<button class="btn danger" data-rmpo="${po.id}">削除</button></td></tr>`).join('') + '</tbody>';
+  $('poTable').querySelectorAll('[data-recv]').forEach(b=>b.addEventListener('click',()=>{ const po=state.pos.find(x=>x.id===b.dataset.recv); const q=prompt('入荷数量', po.qty); if(q===null) return; const d=prompt('入荷日 (YYYY-MM-DD)', asOf()); if(!d) return; po.status='received'; po.receivedQty=E.num(q); po.receivedDate=E.normDate(d)||asOf(); save(); renderAll(); }));
+  $('poTable').querySelectorAll('[data-rmpo]').forEach(b=>b.addEventListener('click',()=>{ if(!confirm('この発注を削除しますか')) return; state.pos=state.pos.filter(x=>x.id!==b.dataset.rmpo); save(); renderAll(); }));
+}
+
+/* ---- settings/data ---- */
+const stf = { stHorizon:'horizonDays', stShort:'shortWindow', stLong:'longWindow', stWeight:'shortWeight', stOver:'overstockDays', stHist:'historyDays' };
+function fillSettings(){ state.settings = Object.assign(E.defaultSettings(), state.settings||{}); Object.entries(stf).forEach(([id,k])=>{ $(id).value = state.settings[k]; }); }
+$('stSave').addEventListener('click', ()=>{ Object.entries(stf).forEach(([id,k])=>{ state.settings[k] = E.num($(id).value); }); save(); renderAll(); alert('保存しました'); });
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000); }
+$('exportJson').addEventListener('click', ()=> download(`d2c-inventory-${asOf()}.json`, JSON.stringify(state,null,1), 'application/json'));
+$('importJson').addEventListener('change', (e)=>{ const f=e.target.files[0]; if(!f) return; f.text().then(t=>{ try{ const s=JSON.parse(t); if(!s.products) throw new Error('形式が違います'); if(!confirm('現在のデータを置き換えます。よいですか')) return; state=s; save(); $('asOf').value = state.asOf || today; renderAll(); }catch(err){ alert('読めません: '+err.message); } }); });
+$('exportCsv').addEventListener('click', ()=>{ const res=E.projectAll(state, asOf()); const head='判定,SKU,商品,現在庫,定期確保,都度に回せる,1日消化,在庫日数,在庫切れ見込,発注期限,推奨発注数,金額,理由'; const body=res.map(r=>[r.status,r.sku,r.name,Math.round(r.stock0),Math.round(r.reservedNow),Math.round(r.freeNow),r.dailyTotal.toFixed(1),r.daysOfCover===Infinity?'':Math.round(r.daysOfCover),r.stockoutDate??'',r.orderDeadlineDate??'',r.recommendQty,Math.round(r.recommendCost),r.reason].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')); download(`hantei-${asOf()}.csv`, '﻿'+[head,...body].join('\n'), 'text/csv'); });
+$('wipe').addEventListener('click', ()=>{ if(!confirm('全データを削除します。JSON を書き出していますか？')) return; if(!confirm('本当に削除しますか')) return; localStorage.removeItem(KEY); state=load(); renderAll(); });
+$('loadSample').addEventListener('click', ()=>{ if(state.products.length && !confirm('現在のデータにサンプルを上書きします。よいですか')) return; state = sampleState(asOf()); save(); selSku = state.products[0].sku; renderAll(); });
+
+function sampleState(base){
+  const mk = (o)=> Object.assign(E.defaultProduct(), o);
+  const products = [
+    mk({ sku:'SB-SERUM', name:'美容液 30ml', leadTimeDays:45, moq:3000, lotStep:500, unitCost:1100, safetyDays:10, reviewDays:14, qtyPerOrder:1, demandFactor:1,
+         stockBase:{date:E.addDays(base,-28), qty:4200}, sub:{active:0, cycleDays:30, firstCycleDays:0, qtyFirst:1, qtyPerShip:1, retentionCurve:[0.8,0.9,0.9], f2Rate:0.8, retention:0.9, newSubRatio:0.25} }),
+    mk({ sku:'SB-CREAM', name:'ナイトクリーム', leadTimeDays:60, moq:3000, lotStep:1000, unitCost:900, safetyDays:14, reviewDays:30, qtyPerOrder:1, demandFactor:1,
+         stockBase:{date:E.addDays(base,-28), qty:9800}, sub:{active:0, cycleDays:60, firstCycleDays:20, qtyFirst:1, qtyPerShip:2, retentionCurve:[0.6,0.4,0.6], f2Rate:0.6, retention:0.6, newSubRatio:0.15} }),
+    mk({ sku:'SB-TRIAL', name:'トライアルセット', leadTimeDays:30, moq:2000, lotStep:500, unitCost:1500, safetyDays:7, reviewDays:14, qtyPerOrder:1, demandFactor:1,
+         stockBase:{date:E.addDays(base,-28), qty:1500}, sub:{active:0, cycleDays:30, qtyPerShip:0, qtyFirst:1, retentionCurve:[], f2Rate:0, retention:0, newSubRatio:0} }),
+  ];
+  const logs=[]; let seed=7; const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
+  for(let d=-120; d<=0; d++){
+    const date=E.addDays(base,d);
+    const ns=Math.round(12+6*rnd()); logs.push({date, sku:'SB-SERUM', orders:Math.round(55+15*rnd()+(d>-7?10:0)), newSubs:ns, newSubsShipped:ns, subShipped:Math.round(10+4*rnd())});
+    const nc=Math.round(3+3*rnd()); logs.push({date, sku:'SB-CREAM', orders:Math.round(18+8*rnd()), newSubs:nc, newSubsShipped:nc, subShipped:Math.round(4+4*rnd())});
+    if(d>=-27) logs.push({date, sku:'SB-TRIAL', orders:Math.round(30+20*rnd())});
+  }
+  const pos=[{id:'s1', sku:'SB-SERUM', qty:3000, orderDate:E.addDays(base,-20), eta:E.addDays(base,25), memo:'サンプルPO', status:'open'}];
+  return { products, logs, pos, settings:E.defaultSettings(), asOf:base };
+}
+
+function renderAll(){ fillSkuSelects(); fillSettings(); renderDash(); renderLogs(); renderProducts(); renderPO(); autoEta(); }
+if(VIEW){
+  document.body.classList.add('view');
+  $('asOf').value = today; $('asOf').disabled = true;
+  const url = new URLSearchParams(location.search).get('data') || 'data/sample-state.json';
+  $('viewBanner').textContent = '閲覧専用。データを読み込んでいます…';
+  fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), {cache:'no-store'}).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); }).then(s=>{
+    if(!s.products) throw new Error('形式が違います');
+    state = s; selSku = (s.products[0]||{}).sku || null; renderAll();
+    const lf = s.lastFetch || {};
+    $('viewBanner').innerHTML = '👀 閲覧専用（入力はできません）。受注データ 〜<b>' + esc(s.asOf||'—') + '</b>・最終取得 ' + esc(lf.at ? lf.at.replace('T',' ').slice(0,16) : '手入力') + '・未出荷 ' + fmtN((s.products[0]||{}).backlogSubs) + ' 件。判定の基準日は今日（' + today + '）。';
+  }).catch(e=>{ $('viewBanner').innerHTML = '⚠️ データを読めませんでした（' + esc(e.message) + '）。GitHub Pages など http(s) で開いてください。file:// では読めません。'; renderAll(); });
+} else { fillProductForm(); renderAll(); }
+window.addEventListener('resize', ()=>{ const r = E.projectAll(state, asOf()).find(x=>x.sku===selSku); if(r) drawChart(r); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "title": "在庫発注判定【サンプル・ダミーデータ】",
+  "sku": "SAMPLE-A",
+  "label": "サンプル商品",
+  "unitPrice": 3000,
+  "firstUnits": 1,
+  "unitsByPlan": {},
+  "lookbackDays": 3,
+  "maxDates": 120,
+  "statePath": "data/sample-state.json",
+  "poPath": "automation/po.json",
+  "outDir": "outputs",
+  "_note": "label は EC-Force の商品ラベル（受注の product_labels に含まれていれば対象）。unitPrice は 2回目以降の本数を 小計÷単価 で推定するときの単価。unitsByPlan に {\"通常\":2,\"プランB\":3} のように入れると推定をやめてその本数を使う。lookbackDays は毎朝取り直す直近日数。"
+}

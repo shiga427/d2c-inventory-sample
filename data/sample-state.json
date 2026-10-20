@@ -1,0 +1,1314 @@
+{
+ "products": [
+  {
+   "sku": "SAMPLE-A",
+   "name": "サンプル商品A 150ml【ダミーデータ】",
+   "leadTimeDays": 120,
+   "moq": 0,
+   "lotStep": 0,
+   "unitCost": 500,
+   "safetyDays": 30,
+   "reviewDays": 30,
+   "demandFactor": 1,
+   "qtyPerOrder": 1,
+   "backlogSubs": 27,
+   "stockBase": {
+    "date": "2026-09-30",
+    "qty": 3500
+   },
+   "sub": {
+    "active": 0,
+    "cycleDays": 45,
+    "firstCycleDays": 30,
+    "qtyFirst": 1,
+    "qtyPerShip": 2,
+    "retentionCurve": [
+     0.6,
+     0.4,
+     0.6,
+     0.6,
+     0.6
+    ],
+    "f2Rate": 0.6,
+    "retention": 0.6,
+    "newSubRatio": 0
+   },
+   "note": "サンプル用のダミー。実在の商品・在庫・原価・発注とは無関係"
+  }
+ ],
+ "logs": [
+  {
+   "date": "2026-06-01",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-02",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-03",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-06-04",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 36,
+   "newSubsShipped": 36,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-06-05",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-06-06",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-07",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-08",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-06-09",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-06-10",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-06-11",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-06-12",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-13",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-14",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 50
+  },
+  {
+   "date": "2026-06-15",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-06-16",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-17",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-18",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-19",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-06-20",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-06-21",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-06-22",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-06-23",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-06-24",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-06-25",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-26",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-06-27",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-06-28",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-06-29",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-06-30",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-07-01",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-07-02",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-07-03",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-07-04",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-07-05",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-07-06",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-07-07",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-07-08",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-07-09",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-07-10",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-07-11",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 50
+  },
+  {
+   "date": "2026-07-12",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-07-13",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-07-14",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-07-15",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-07-16",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-07-17",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-07-18",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-07-19",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 40
+  },
+  {
+   "date": "2026-07-20",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-07-21",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-07-22",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-07-23",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-07-24",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-07-25",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-07-26",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-07-27",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-07-28",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-07-29",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-07-30",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-07-31",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-08-01",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-08-02",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-08-03",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-08-04",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-08-05",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-08-06",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-08-07",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-08-08",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-08-09",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-08-10",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-08-11",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-08-12",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 40
+  },
+  {
+   "date": "2026-08-13",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-08-14",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-08-15",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-08-16",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 42
+  },
+  {
+   "date": "2026-08-17",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-08-18",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-08-19",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-08-20",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 36,
+   "newSubsShipped": 36,
+   "subShipped": 40
+  },
+  {
+   "date": "2026-08-21",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-08-22",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-08-23",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-08-24",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-08-25",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 40
+  },
+  {
+   "date": "2026-08-26",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-08-27",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-08-28",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 50
+  },
+  {
+   "date": "2026-08-29",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-08-30",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-08-31",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-01",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-02",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-03",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-04",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-09-05",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-09-06",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-09-07",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-09-08",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-09-09",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-10",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-09-11",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-09-12",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-09-13",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-09-14",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-15",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 47
+  },
+  {
+   "date": "2026-09-16",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-17",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-09-18",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 48
+  },
+  {
+   "date": "2026-09-19",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-09-20",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 45
+  },
+  {
+   "date": "2026-09-21",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-09-22",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-09-23",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-09-24",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 37,
+   "newSubsShipped": 37,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-09-25",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-09-26",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 39,
+   "newSubsShipped": 39,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-09-27",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 43,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-09-28",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-09-29",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 38,
+   "newSubsShipped": 38,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-09-30",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-10-01",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 44,
+   "subShipped": 43
+  },
+  {
+   "date": "2026-10-02",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 36,
+   "newSubsShipped": 36,
+   "subShipped": 50
+  },
+  {
+   "date": "2026-10-03",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 41
+  },
+  {
+   "date": "2026-10-04",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-10-05",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 36,
+   "newSubsShipped": 36,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-10-06",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 44
+  },
+  {
+   "date": "2026-10-07",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 46
+  },
+  {
+   "date": "2026-10-08",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 41,
+   "newSubsShipped": 41,
+   "subShipped": 49
+  },
+  {
+   "date": "2026-10-09",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 40,
+   "newSubsShipped": 40,
+   "subShipped": 40
+  },
+  {
+   "date": "2026-10-10",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 45,
+   "newSubsShipped": 42,
+   "subShipped": 52,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-11",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 40,
+   "subShipped": 43,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-12",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 39,
+   "subShipped": 52,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-13",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 42,
+   "newSubsShipped": 42,
+   "subShipped": 45,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-14",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 46,
+   "newSubsShipped": 43,
+   "subShipped": 45,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-15",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 45,
+   "newSubsShipped": 42,
+   "subShipped": 52,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-16",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 47,
+   "newSubsShipped": 44,
+   "subShipped": 48,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-17",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 40,
+   "subShipped": 48,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-18",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 44,
+   "newSubsShipped": 41,
+   "subShipped": 50,
+   "src": "ecforce"
+  },
+  {
+   "date": "2026-10-19",
+   "sku": "SAMPLE-A",
+   "orders": 0,
+   "newSubs": 43,
+   "newSubsShipped": 40,
+   "subShipped": 52,
+   "src": "ecforce"
+  }
+ ],
+ "pos": [
+  {
+   "id": "po-fixture",
+   "sku": "SAMPLE-A",
+   "qty": 20000,
+   "orderDate": "2026-07-30",
+   "eta": "2026-11-30",
+   "memo": "fixture",
+   "status": "open"
+  }
+ ],
+ "settings": {
+  "horizonDays": 180,
+  "shortWindow": 7,
+  "longWindow": 28,
+  "shortWeight": 0.6,
+  "overstockDays": 120,
+  "historyDays": 400
+ },
+ "asOf": "2026-10-19",
+ "source": "サンプル用のダミーデータ（automation/fixtures から生成）。実データではありません",
+ "lastFetch": {
+  "at": "2026-10-20T17:42:52+09:00",
+  "mode": "fixtures:automation/fixtures/orders.json",
+  "today": "2026-10-20",
+  "dates": [
+   "2026-10-10",
+   "2026-10-11",
+   "2026-10-12",
+   "2026-10-13",
+   "2026-10-14",
+   "2026-10-15",
+   "2026-10-16",
+   "2026-10-17",
+   "2026-10-18",
+   "2026-10-19"
+  ],
+  "requests": 10,
+  "fetched": 735,
+  "matched": 685,
+  "backlogBefore": 0,
+  "backlogAfter": 27,
+  "detail": [
+   {
+    "date": "2026-10-10",
+    "fetched": 76,
+    "matched": 71,
+    "newSubs": 45,
+    "newSubsShipped": 42,
+    "subShipped": 52,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-11",
+    "fetched": 70,
+    "matched": 65,
+    "newSubs": 43,
+    "newSubsShipped": 40,
+    "subShipped": 43,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-12",
+    "fetched": 73,
+    "matched": 68,
+    "newSubs": 42,
+    "newSubsShipped": 39,
+    "subShipped": 52,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-13",
+    "fetched": 70,
+    "matched": 65,
+    "newSubs": 42,
+    "newSubsShipped": 42,
+    "subShipped": 45,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-14",
+    "fetched": 74,
+    "matched": 69,
+    "newSubs": 46,
+    "newSubsShipped": 43,
+    "subShipped": 45,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-15",
+    "fetched": 76,
+    "matched": 71,
+    "newSubs": 45,
+    "newSubsShipped": 42,
+    "subShipped": 52,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-16",
+    "fetched": 76,
+    "matched": 71,
+    "newSubs": 47,
+    "newSubsShipped": 44,
+    "subShipped": 48,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-17",
+    "fetched": 72,
+    "matched": 67,
+    "newSubs": 43,
+    "newSubsShipped": 40,
+    "subShipped": 48,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-18",
+    "fetched": 74,
+    "matched": 69,
+    "newSubs": 44,
+    "newSubsShipped": 41,
+    "subShipped": 50,
+    "excluded": 3
+   },
+   {
+    "date": "2026-10-19",
+    "fetched": 74,
+    "matched": 69,
+    "newSubs": 43,
+    "newSubsShipped": 40,
+    "subShipped": 52,
+    "excluded": 3
+   }
+  ]
+ }
+}
